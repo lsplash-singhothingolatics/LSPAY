@@ -1,0 +1,12 @@
+{
+  "name": "lspay",
+  "version": "1.0.0",
+  "description": "LSPAY — premium payment website",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
