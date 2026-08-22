@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSPAY — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="app">
+  <header class="app-nav">
+    <div class="container app-nav-inner">
+      <a href="dashboard.html" class="brand"><span class="brand-mark">LS</span><span class="brand-name">PAY</span></a>
+      <div class="app-user">
+        <span class="hello">Hi, <strong id="userName">—</strong></span>
+        <span class="handle" id="userHandle">@—</span>
+        <button class="btn btn-ghost" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container app-main">
+    <!-- Balance -->
+    <section class="balance-card">
+      <div>
+        <small>Wallet balance</small>
+        <div class="balance-amount" id="balance">₹ 0.00</div>
+        <span class="acct-line">Account: <span id="acctHandle">@—</span></span>
+      </div>
+      <div class="balance-actions">
+        <button class="btn btn-primary" data-open="pay">Pay someone</button>
+        <button class="btn btn-outline" data-open="add">Add money</button>
+      </div>
+    </section>
+
+    <div class="app-grid">
+      <!-- Left column: quick actions -->
+      <div class="col">
+        <section class="panel" id="payPanel">
+          <h3>Pay someone</h3>
+          <p class="muted">Send money instantly to any LSPAY user.</p>
+          <form id="payForm" class="stack">
+            <label>Recipient username
+              <input type="text" name="to" placeholder="e.g. johndoe" autocomplete="off" required />
+            </label>
+            <label>Amount (₹)
+              <input type="number" name="amount" placeholder="0.00" min="1" step="0.01" required />
+            </label>
+            <label>Note (optional)
+              <input type="text" name="note" placeholder="What's it for?" />
+            </label>
+            <label>Payment code
+              <input type="password" name="pin" placeholder="Default is 000000" inputmode="numeric" maxlength="6" required />
+            </label>
+            <div class="form-error" id="payError"></div>
+            <div class="form-ok" id="payOk"></div>
+            <button type="submit" class="btn btn-primary btn-block">Send payment</button>
+          </form>
+        </section>
+
+        <section class="panel" id="addPanel">
+          <h3>Add money to wallet</h3>
+          <p class="muted">Top up from a linked card or bank account.</p>
+          <form id="addForm" class="stack">
+            <label>Source
+              <select name="source" id="addSource" required>
+                <option value="">Select a card or bank…</option>
+              </select>
+            </label>
+            <label>Amount (₹)
+              <input type="number" name="amount" placeholder="0.00" min="1" step="0.01" required />
+            </label>
+            <div class="form-error" id="addError"></div>
+            <div class="form-ok" id="addOk"></div>
+            <button type="submit" class="btn btn-primary btn-block">Add money</button>
+          </form>
+        </section>
+
+        <section class="panel" id="pinPanel">
+          <h3>Payment code</h3>
+          <p class="muted">Your code is required to send money. Default is <strong>000000</strong> — change it here.</p>
+          <form id="pinForm" class="stack">
+            <label>Current code
+              <input type="password" name="current" placeholder="000000" inputmode="numeric" maxlength="6" required />
+            </label>
+            <label>New code (4–6 digits)
+              <input type="password" name="next" placeholder="New payment code" inputmode="numeric" maxlength="6" required />
+            </label>
+            <div class="form-error" id="pinError"></div>
+            <div class="form-ok" id="pinOk"></div>
+            <button type="submit" class="btn btn-outline btn-block">Update payment code</button>
+          </form>
+        </section>
+      </div>
+
+      <!-- Right column: methods + transactions -->
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head">
+            <h3>Payment methods</h3>
+          </div>
+
+          <div class="method-block">
+            <div class="method-head">
+              <span>💳 Cards</span>
+            </div>
+            <div id="cardsList" class="method-list"></div>
+            <details class="add-method">
+              <summary>+ Add a card</summary>
+              <form id="cardForm" class="stack">
+                <label>Cardholder name
+                  <input type="text" name="holder" placeholder="Jane Doe" required />
+                </label>
+                <label>Card number
+                  <input type="text" name="number" placeholder="1234 5678 9012 3456" maxlength="19" required />
+                </label>
+                <div class="row2">
+                  <label>Expiry
+                    <input type="text" name="expiry" placeholder="MM/YY" maxlength="5" required />
+                  </label>
+                  <label>CVV
+                    <input type="password" name="cvv" placeholder="123" maxlength="4" required />
+                  </label>
+                </div>
+                <div class="form-error" id="cardError"></div>
+                <button type="submit" class="btn btn-outline btn-block">Save card</button>
+              </form>
+            </details>
+          </div>
+
+          <div class="method-block">
+            <div class="method-head">
+              <span>🏦 Bank accounts</span>
+            </div>
+            <div id="banksList" class="method-list"></div>
+            <details class="add-method">
+              <summary>+ Add a bank account</summary>
+              <form id="bankForm" class="stack">
+                <label>Bank name
+                  <input type="text" name="bank" placeholder="e.g. HDFC Bank" required />
+                </label>
+                <label>Account holder
+                  <input type="text" name="holder" placeholder="Jane Doe" required />
+                </label>
+                <label>Account number
+                  <input type="text" name="number" placeholder="000123456789" required />
+                </label>
+                <label>IFSC / Routing
+                  <input type="text" name="ifsc" placeholder="HDFC0001234" required />
+                </label>
+                <div class="form-error" id="bankError"></div>
+                <button type="submit" class="btn btn-outline btn-block">Save bank account</button>
+              </form>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Recent activity</h3>
+          <div id="txList" class="tx-list"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
